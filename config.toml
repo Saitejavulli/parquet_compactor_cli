@@ -1,0 +1,6 @@
+input = "sample_data/small_files"
+output = "sample_data/compacted"
+target_size = "128MB"
+dry_run = false
+verbose = true
+threads = 4

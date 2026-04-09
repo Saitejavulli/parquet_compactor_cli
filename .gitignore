@@ -1,0 +1,7 @@
+/target
+**/*.rs.bk
+Cargo.lock
+.env
+sample_data/small_files
+sample_data/compacted
+sample_data/combined
