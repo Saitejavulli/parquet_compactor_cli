@@ -72,11 +72,12 @@ fn main() -> Result<()> {
     let target_bytes = size_parser::parse_size(&merged.target_size)?;
 
     let options = CompactionOptions {
-        input_dir: merged.input.clone(),
-        output_dir: merged.output.clone(),
-        target_size_bytes: target_bytes,
-        dry_run: merged.dry_run,
-        verbose: merged.verbose,
+    input_dir: merged.input.clone(),
+    output_dir: merged.output.clone(),
+    target_size_bytes: target_bytes,
+    dry_run: merged.dry_run,
+    verbose: merged.verbose,
+    threads: merged.threads,
     };
 
     match compact_files(options) {
