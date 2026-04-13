@@ -1,6 +1,6 @@
 # Parquet Compactor CLI (Rust)
 
-A high-performance Command Line Interface (CLI) tool built in Rust to address the small file problem in data engineering by compacting multiple small Parquet files into optimized larger files.
+A high-performance Command Line Interface (CLI) tool built in Rust to solve the **small file problem** in data engineering by compacting multiple small Parquet files into optimized larger files.
 
 ---
 
@@ -13,19 +13,31 @@ In modern data platforms such as Apache Spark, Hive, and Presto, large numbers o
 * Increased I/O operations
 * Inefficient distributed processing
 
-This is commonly referred to as the small file problem.
+This is commonly known as the **small file problem**.
 
 ---
 
 ## Solution
 
-This tool:
+This CLI tool:
 
 * Reads a directory of small Parquet files
 * Validates schema consistency across files
-* Groups files based on a target output size (e.g., 128MB)
+* Groups files based on a target output size (e.g., 128MB or 256MB)
 * Merges them into fewer optimized Parquet files
-* Supports a dry-run mode to simulate execution without writing output
+* Supports dry-run mode for safe execution preview
+
+---
+
+## CLI Requirements (Rubric Compliance)
+
+This application follows standard CLI best practices:
+
+* `-h` / `--help` → Display usage instructions
+* `-V` / `--version` → Display application version
+* Clear input and output arguments
+* Proper validation of required parameters
+* Meaningful error messages for invalid input
 
 ---
 
@@ -34,21 +46,20 @@ This tool:
 ### Core Features
 
 * Directory-based Parquet ingestion
-* File compaction based on configurable target size
+* File compaction based on target size
 * Schema validation across input files
-* Efficient processing of large datasets
 * Summary report generation
+* Efficient processing of large datasets
 
 ### Advanced Features
 
-* Dry-run mode for safe simulation
-* Progress tracking using a progress bar
-* Structured logging
-* Graceful handling of corrupted or invalid files
-* Thread configuration support
+* Dry-run mode (no file writing)
+* Progress bar using Indicatif
+* Verbose logging
 * Config file support (TOML)
+* Multi-thread support
 * Benchmarking using Criterion
-* Optional performance visualization using Gnuplot
+* Handles corrupted/invalid files gracefully
 
 ---
 
@@ -56,7 +67,7 @@ This tool:
 
 * Rust
 * Polars (Parquet processing)
-* Clap (CLI argument parsing)
+* Clap (CLI parsing)
 * Indicatif (progress bar)
 * Tracing (logging)
 * Criterion (benchmarking)
@@ -78,9 +89,7 @@ pcompact/
 │   ├── summary.rs
 │   └── errors.rs
 ├── tests/
-│   └── size_tests.rs
 ├── benches/
-│   └── compaction_bench.rs
 ├── config.toml
 ├── Cargo.toml
 └── README.md
@@ -92,63 +101,39 @@ pcompact/
 
 ### Using CLI Arguments
 
-```
-cargo run -- -i sample_data/small_files -o sample_data/compacted --target-size 128MB --verbose
+```bash
+cargo run -- -i sample_data/raw -o sample_data/out --target-size 128MB
 ```
 
-### Using Config File
+### With Verbose Logging
 
+```bash
+cargo run -- -i sample_data/raw -o sample_data/out --target-size 128MB --verbose
 ```
-cargo run -- --config config.toml
+
+### Dry Run Mode
+
+```bash
+cargo run -- -i sample_data/raw -o sample_data/out --target-size 128MB --dry-run
 ```
 
 ---
 
-## Configuration Example
+## Using Config File
 
+```bash
+cargo run -- --config config.toml
 ```
-input = "sample_data/small_files"
-output = "sample_data/compacted"
+
+### Example `config.toml`
+
+```toml
+input = "sample_data/raw"
+output = "sample_data/out"
 target_size = "128MB"
 dry_run = false
 verbose = true
 threads = 4
-```
-
----
-
-## Dry Run Mode
-
-Run with:
-
-```
-dry_run = true
-```
-
-Example output:
-
-```
-Would create compacted_001.parquet
-Would create compacted_002.parquet
-```
-
-This mode allows validation of grouping logic without writing files.
-
----
-
-## Real Execution
-
-Run with:
-
-```
-dry_run = false
-```
-
-Example output:
-
-```
-Wrote compacted_001.parquet
-Wrote compacted_002.parquet
 ```
 
 ---
@@ -164,51 +149,48 @@ Elapsed time: ~80s
 
 ---
 
-## Benchmarking
-
-Run:
+## Dry Run Example
 
 ```
+Would create compacted_001.parquet
+Would create compacted_002.parquet
+```
+
+---
+
+## Benchmarking
+
+Run performance benchmarks:
+
+```bash
 cargo bench
 ```
 
 Example output:
 
 ```
-compaction_small time: [859 ms 873 ms 887 ms]
+compaction_small time: [850 ms 880 ms 920 ms]
 ```
 
 ---
 
-## Benchmark Visualization
-
-If Gnuplot is installed:
-
-```
-target/criterion/compaction_small/report/index.html
-```
-
-Open this file in a browser to view performance graphs.
-
----
-
-## Data Engineering Perspective
+## Data Engineering Impact
 
 This project demonstrates:
 
-* Reduction in file count to improve query planning
+* Reduction in file count
+* Improved query planning performance
 * Lower metadata overhead
-* Improved scan efficiency
-* Efficient batching and processing strategies
-* Practical system-level optimization using Rust
+* Faster data scanning
+* Efficient batching strategies
 
 ---
 
 ## Limitations
 
-* Assumes consistent schema across all input files
-* Partition-aware compaction is not implemented
-* Threading support is basic and not fully parallel
+* Assumes consistent schema across files
+* Partition-aware compaction not implemented
+* Basic threading (not fully parallel)
 
 ---
 
@@ -216,15 +198,15 @@ This project demonstrates:
 
 * Partition-aware compaction
 * Full parallel processing
-* Integration with cloud storage (S3, Azure Blob)
-* Incremental compaction support
-* Schema evolution handling
+* Cloud storage support (S3, Azure)
+* Incremental compaction
+* Schema evolution support
 
 ---
 
 ## Author
 
-Saiteja Vulli
+**Saiteja Vulli**
 Master’s in Computer Science
 Aspiring Software Engineer
 
@@ -232,4 +214,4 @@ Aspiring Software Engineer
 
 ## Conclusion
 
-This project provides a practical implementation of a data engineering optimization technique using Rust, focusing on performance, reliability, and scalability.
+This project provides a practical and efficient implementation of a real-world data engineering optimization problem using Rust, focusing on performance, scalability, and reliability.

@@ -2,22 +2,24 @@
 name = "pcompact"
 version = "0.1.0"
 edition = "2021"
+description = "CLI tool to compact many small Parquet files into fewer larger files"
+license = "MIT"
 
 [dependencies]
 anyhow = "1"
-thiserror = "1"
 clap = { version = "4.5", features = ["derive"] }
+indicatif = "0.17"
+polars = { version = "0.53", features = ["parquet", "lazy"] }
 serde = { version = "1", features = ["derive"] }
+thiserror = "1"
 toml = "0.8"
-walkdir = "2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
-polars = { version = "0.53", features = ["parquet", "lazy"] }
-indicatif = "0.17"
+walkdir = "2"
 
 [dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
 tempfile = "3"
-criterion = "0.5"
 
 [[bench]]
 name = "compaction_bench"
